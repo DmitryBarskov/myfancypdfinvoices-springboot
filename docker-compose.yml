@@ -1,0 +1,26 @@
+services:
+  java:
+    image: maven:3-eclipse-temurin-25-alpine
+    user: "${DOCKER_UID}:${DOCKER_GID}"
+    environment:
+      HOME: /home/juser
+      MAVEN_CONFIG: /home/juser/.m2
+    ports:
+      - 8080:8080
+    volumes:
+      - h2_data:/data
+      - .:/app
+      - $HOME/.m2:/home/juser/.m2
+    working_dir: /app
+    command: sh -c 'mvn package && java -Dspring.profiles.active=dev -jar target/myfancypdfinvoices-1.0-SNAPSHOT.jar'
+
+  volume-init:
+    image: busybox
+    command: chown -R "${DOCKER_UID}:${DOCKER_GID}" /data
+    volumes:
+      - h2_data:/data
+    profiles:
+      - init
+
+volumes:
+  h2_data:
