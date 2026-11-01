@@ -12,4 +12,8 @@ public record Invoice(
   public Invoice(String userId, Integer amount, String pdfUrl) {
     this(UUID.randomUUID().toString(), userId, amount, pdfUrl);
   }
+
+  public Invoice withId(String newId) {
+    return new Invoice(newId, userId, amount, pdfUrl);
+  }
 }
